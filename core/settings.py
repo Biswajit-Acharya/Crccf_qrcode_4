@@ -74,6 +74,8 @@ if DATABASE_URL:
     if dj_database_url is None:
         raise RuntimeError("dj-database-url is required when DATABASE_URL is set.")
     DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    DATABASES["default"]["options"] = {"ssl": {"ssl": {}}}
+    
 
 # To switch to MySQL later, replace DATABASES with:
 # DATABASES = {
