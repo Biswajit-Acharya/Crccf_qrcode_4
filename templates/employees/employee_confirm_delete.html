@@ -1,0 +1,16 @@
+{% extends "employees/base.html" %}
+
+{% block title %}Delete Employee | CR Cyber Crime Foundation{% endblock %}
+
+{% block content %}
+<section class="confirm-card">
+    <div class="section-kicker">Confirm Delete</div>
+    <h1>Delete {{ employee.full_name }}?</h1>
+    <p class="muted">This removes the employee record from the Django database. Existing QR codes will no longer resolve to employee data.</p>
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <a class="ghost-button" href="{% url 'dashboard' %}">Cancel</a>
+        <button class="danger-button" type="submit">Delete Employee</button>
+    </form>
+</section>
+{% endblock %}

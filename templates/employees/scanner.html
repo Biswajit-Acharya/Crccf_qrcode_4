@@ -1,0 +1,160 @@
+{% extends "employees/base.html" %}
+
+{% block title %}Employee Scanner | CR Cyber Crime Foundation{% endblock %}
+
+{% block content %}
+<section class="scanner-shell">
+    <div class="scanner-head">
+        <div>
+            <div class="section-kicker">Custom Scanner</div>
+            <h1>Scan Employee QR</h1>
+            <p class="muted">The QR token stays hidden here. Latest employee details appear in text format.</p>
+        </div>
+        <a class="secondary-button" href="{% url 'dashboard' %}">Dashboard</a>
+    </div>
+
+    <div class="scanner-layout">
+        <div class="scanner-camera">
+            <video id="scannerVideo" autoplay muted playsinline></video>
+            <div id="scannerStatus" class="scanner-status">Starting camera...</div>
+        </div>
+
+        <div class="scanner-result">
+            <label>
+                Manual Scan Code
+                <input id="manualCode" type="text" placeholder="Paste token or employee ID">
+            </label>
+            <button id="manualButton" class="primary-button" type="button">Show Details</button>
+            <pre id="employeeText" class="employee-text-output">Scan a QR code to show employee details.</pre>
+        </div>
+    </div>
+</section>
+
+<script>
+    const video = document.getElementById("scannerVideo");
+    const statusBox = document.getElementById("scannerStatus");
+    const output = document.getElementById("employeeText");
+    const manualCode = document.getElementById("manualCode");
+    const manualButton = document.getElementById("manualButton");
+    const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i;
+    let lastCode = "";
+    let scanning = true;
+
+    function employeeToText(employee) {
+        return `CR Cyber Crime Foundation
+
+Employee ID: ${employee.employee_id || ""}
+Name: ${employee.full_name || ""}
+Designation: ${employee.designation || ""}
+Department: ${employee.department || ""}
+Phone: ${employee.phone || ""}
+Email: ${employee.email || ""}
+Company: ${employee.company_name || ""}
+Company Address: ${employee.company_address || ""}
+Joining Date: ${employee.joining_date || ""}
+Status: ${employee.status || ""}
+Last Updated: ${employee.updated_at || ""}`;
+    }
+
+    function cleanScanValue(value) {
+        const text = String(value || "").trim();
+        const uuid = text.match(uuidPattern);
+        if (uuid) {
+            return { type: "token", value: uuid[0] };
+        }
+
+        const idLine = text.match(/Employee ID:\s*([^\n\r]+)/i);
+        if (idLine) {
+            return { type: "employee_id", value: idLine[1].trim() };
+        }
+
+        return { type: "employee_id", value: text };
+    }
+
+    async function showEmployee(rawValue) {
+        const scan = cleanScanValue(rawValue);
+        if (!scan.value || scan.value === lastCode) {
+            return;
+        }
+
+        lastCode = scan.value;
+        statusBox.textContent = "Fetching latest employee details...";
+
+        const endpoint = scan.type === "token"
+            ? `/api/employee/${encodeURIComponent(scan.value)}/`
+            : `/api/employee/id/${encodeURIComponent(scan.value)}/`;
+
+        try {
+            const response = await fetch(endpoint, { headers: { "Accept": "application/json" } });
+            if (!response.ok) {
+                throw new Error("Employee not found");
+            }
+
+            const employee = await response.json();
+            output.textContent = employeeToText(employee);
+            statusBox.textContent = "Verified latest data";
+        } catch (error) {
+            output.textContent = "Employee details not found for this QR.";
+            statusBox.textContent = "Scan failed";
+            lastCode = "";
+        }
+    }
+
+    async function startScanner() {
+        if (!("BarcodeDetector" in window)) {
+            statusBox.textContent = "Camera QR scanner is not supported on this browser. Use manual scan code.";
+            return;
+        }
+
+        try {
+            const detector = new BarcodeDetector({ formats: ["qr_code"] });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" },
+                audio: false
+            });
+            video.srcObject = stream;
+            statusBox.textContent = "Point camera at employee QR";
+
+            async function tick() {
+                if (!scanning) {
+                    return;
+                }
+
+                if (video.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA) {
+                    const codes = await detector.detect(video);
+                    if (codes.length) {
+                        showEmployee(codes[0].rawValue);
+                    }
+                }
+
+                requestAnimationFrame(tick);
+            }
+
+            tick();
+        } catch (error) {
+            statusBox.textContent = "Camera permission needed. Use manual scan code if camera is blocked.";
+        }
+    }
+
+    manualButton.addEventListener("click", function () {
+        showEmployee(manualCode.value);
+    });
+
+    manualCode.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            showEmployee(manualCode.value);
+        }
+    });
+
+    window.addEventListener("beforeunload", function () {
+        scanning = false;
+        const stream = video.srcObject;
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    startScanner();
+</script>
+{% endblock %}

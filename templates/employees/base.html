@@ -1,0 +1,38 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}CR Cyber Crime Foundation{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'employees/css/styles.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{% url 'dashboard' %}">
+            <span class="brand-mark">CR</span>
+            <span>
+                <strong>CR Cyber Crime Foundation</strong>
+                <small>Employee QR Verification</small>
+            </span>
+        </a>
+        {% if request.user.is_authenticated %}
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button class="ghost-button" type="submit">Logout</button>
+            </form>
+        {% endif %}
+    </header>
+
+    <main class="page">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

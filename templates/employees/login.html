@@ -1,0 +1,28 @@
+{% extends "employees/base.html" %}
+
+{% block title %}Admin Login | CR Cyber Crime Foundation{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-panel">
+        <div class="section-kicker">Secure Access</div>
+        <h1>Admin Login</h1>
+        <p class="muted">Manage verified employee records and QR credentials.</p>
+        <form method="post" class="form-card">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <label>
+                Username
+                {{ form.username }}
+                {{ form.username.errors }}
+            </label>
+            <label>
+                Password
+                {{ form.password }}
+                {{ form.password.errors }}
+            </label>
+            <button class="primary-button" type="submit">Login</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

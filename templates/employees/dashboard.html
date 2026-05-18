@@ -1,0 +1,100 @@
+{% extends "employees/base.html" %}
+
+{% block title %}Employee Dashboard | CR Cyber Crime Foundation{% endblock %}
+
+{% block content %}
+<section class="dashboard-head">
+    <div>
+        <div class="section-kicker">Admin Dashboard</div>
+        <h1>Employee Records</h1>
+        <p class="muted">Django database is the shared source of truth for every QR verification.</p>
+    </div>
+    <div class="dashboard-actions">
+        <a class="secondary-button" href="{% url 'employee_scanner' %}">Open Scanner</a>
+        <a class="primary-button" href="{% url 'employee_create' %}">Add Employee</a>
+    </div>
+</section>
+
+<form class="toolbar" method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="Search employee ID or name">
+    <select name="status">
+        <option value="">All statuses</option>
+        <option value="Active" {% if status == "Active" %}selected{% endif %}>Active</option>
+        <option value="Inactive" {% if status == "Inactive" %}selected{% endif %}>Inactive</option>
+    </select>
+    <button class="secondary-button" type="submit">Filter</button>
+</form>
+
+<section class="table-card">
+    <div class="responsive-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.employee_id }}</td>
+                        <td>{{ employee.full_name }}</td>
+                        <td>{{ employee.designation }}</td>
+                        <td>{{ employee.department }}</td>
+                        <td><span class="status-pill {{ employee.status|lower }}">{{ employee.status }}</span></td>
+                        <td class="actions">
+                            <a href="{% url 'employee_qr_download' employee.pk %}">QR</a>
+                            <a href="{% url 'employee_update' employee.pk %}">Edit</a>
+                            <a class="danger-link" href="{% url 'employee_delete' employee.pk %}">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-state">No employee records found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        alert("Dashboard script running");
+
+        const rows = document.querySelectorAll("tr");
+
+        rows.forEach(function(row) {
+
+            const cells = row.querySelectorAll("td");
+
+            if (cells.length >= 2) {
+
+                const empId = cells[0].innerText.trim();
+                const name = cells[1].innerText.trim();
+
+                if (empId && name && empId !== "EMPLOYEE ID") {
+
+                    localStorage.setItem(
+                        "employee_" + empId,
+                        JSON.stringify({
+                            employee_id: empId,
+                            full_name: name
+                        })
+                    );
+
+                }
+
+            }
+
+        });
+
+        alert("Employees saved to localStorage");
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Verification | CR Cyber Crime Foundation</title>
+    <link rel="stylesheet" href="{% static 'employees/css/styles.css' %}">
+</head>
+<body class="verification-body">
+    <main class="verification-page">
+        <section class="verification-card" aria-live="polite">
+            <div class="verify-brand">
+                <span class="brand-mark">CR</span>
+                <div>
+                    <strong>CR Cyber Crime Foundation</strong>
+                    <small>Employee Verification Portal</small>
+                </div>
+            </div>
+
+            <div id="notice" class="notice">Checking verification status...</div>
+            <div id="content" class="employee-public-card">
+                <div class="skeleton-avatar"></div>
+                <div class="skeleton-line wide"></div>
+                <div class="skeleton-line"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const lookupKey = "{{ lookup_key|escapejs }}";
+        const apiUrl = "{{ api_url|escapejs }}";
+        const cacheKey = `employee_qr_${lookupKey}`;
+        const notice = document.getElementById("notice");
+        const content = document.getElementById("content");
+
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"']/g, function (char) {
+                return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[char];
+            });
+        }
+
+        function renderEmployee(employee, modeText) {
+            const active = employee.status === "Active";
+            notice.textContent = modeText;
+            notice.className = active ? "notice online" : "notice inactive";
+            const photo = employee.profile_photo
+                ? `<img class="profile-photo" src="${escapeHtml(employee.profile_photo)}" alt="${escapeHtml(employee.full_name)}">`
+                : `<div class="profile-photo placeholder">${escapeHtml((employee.full_name || "CR").slice(0, 2).toUpperCase())}</div>`;
+
+            content.innerHTML = `
+                <div class="public-head">
+                    ${photo}
+                    <div>
+                        <span class="status-pill ${active ? "active" : "inactive"}">${escapeHtml(employee.verification_status)}</span>
+                        <h1>${escapeHtml(employee.full_name)}</h1>
+                        <p>${escapeHtml(employee.designation)} · ${escapeHtml(employee.department)}</p>
+                    </div>
+                </div>
+                <dl class="detail-grid">
+                    <div><dt>Employee ID</dt><dd>${escapeHtml(employee.employee_id)}</dd></div>
+                    <div><dt>Phone</dt><dd>${escapeHtml(employee.phone)}</dd></div>
+                    <div><dt>Email</dt><dd>${escapeHtml(employee.email)}</dd></div>
+                    <div><dt>Joining Date</dt><dd>${escapeHtml(employee.joining_date)}</dd></div>
+                    <div><dt>Company</dt><dd>${escapeHtml(employee.company_name)}</dd></div>
+                    <div><dt>Status</dt><dd>${escapeHtml(employee.status)}</dd></div>
+                    <div class="wide"><dt>Company Address</dt><dd>${escapeHtml(employee.company_address)}</dd></div>
+                </dl>
+            `;
+        }
+
+        function renderError(message) {
+            notice.textContent = "Offline mode";
+            notice.className = "notice inactive";
+            content.innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
+        }
+
+        async function loadEmployee() {
+            try {
+                const response = await fetch(apiUrl, {cache: "no-store"});
+                if (!response.ok) {
+                    throw new Error("Employee not found");
+                }
+                const employee = await response.json();
+                // localStorage is used only as offline cache. Django database is the main shared source
+                // so all devices can see updated employee details after scanning QR.
+                localStorage.setItem(cacheKey, JSON.stringify(employee));
+                renderEmployee(employee, "Online verified");
+            } catch (error) {
+                const cached = localStorage.getItem(cacheKey);
+                if (cached) {
+                    renderEmployee(JSON.parse(cached), "Offline mode: showing last saved details");
+                } else {
+                    renderError("Employee data not available offline. Please connect to internet once.");
+                }
+            }
+        }
+
+        loadEmployee();
+    </script>
+</body>
+</html>
