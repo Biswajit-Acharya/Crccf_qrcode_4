@@ -24,6 +24,14 @@ body {
     background: linear-gradient(180deg, #eff7fb 0%, #ffffff 42%);
 }
 
+html.pwa-standalone,
+html.pwa-standalone body,
+html.verification-app,
+html.verification-app body {
+    min-height: 100%;
+    background: var(--navy);
+}
+
 a {
     color: inherit;
     text-decoration: none;
@@ -336,7 +344,10 @@ label {
 .verification-body {
     min-height: 100vh;
     min-height: 100dvh;
+    min-height: -webkit-fill-available;
     overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
     background:
         radial-gradient(circle at top left, rgba(25, 211, 255, 0.24), transparent 34%),
         linear-gradient(145deg, #061b34 0%, #092945 46%, #071426 100%);
@@ -361,7 +372,9 @@ label {
 .verify-text-card {
     width: 100%;
     max-height: calc(100dvh - 28px);
-    overflow: hidden;
+    overflow: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid rgba(255, 255, 255, 0.72);
     border-radius: 8px;
     padding: clamp(16px, 4vw, 26px);
@@ -483,18 +496,40 @@ label {
     cursor: pointer;
 }
 
+.pwa-install-help {
+    display: none;
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: center;
+}
+
 .pwa-install-ready .pwa-install-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
+.pwa-ios:not(.pwa-standalone) .pwa-install-help {
+    display: block;
+}
+
 .pwa-standalone .pwa-install-button,
-.pwa-installed .pwa-install-button {
+.pwa-installed .pwa-install-button,
+.pwa-standalone .pwa-install-help,
+.pwa-installed .pwa-install-help {
     display: none;
 }
 
 @media (display-mode: standalone) {
+    .verification-body {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+    }
+
     .verify-text-page {
         padding-top: max(28px, env(safe-area-inset-top));
         padding-bottom: max(28px, env(safe-area-inset-bottom));
@@ -506,6 +541,12 @@ label {
 }
 
 @media (display-mode: fullscreen) {
+    .verification-body {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+    }
+
     .verify-text-page {
         padding-top: max(14px, env(safe-area-inset-top));
         padding-bottom: max(14px, env(safe-area-inset-bottom));

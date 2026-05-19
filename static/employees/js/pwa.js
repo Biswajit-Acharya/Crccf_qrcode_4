@@ -1,4 +1,6 @@
 (function () {
+    const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
     function isStandalone() {
         return window.matchMedia("(display-mode: standalone)").matches ||
             window.matchMedia("(display-mode: fullscreen)").matches ||
@@ -7,6 +9,7 @@
 
     function setDisplayModeClass() {
         document.documentElement.classList.toggle("pwa-standalone", isStandalone());
+        document.documentElement.classList.toggle("pwa-ios", isIOS);
     }
 
     setDisplayModeClass();
@@ -30,6 +33,10 @@
     });
 
     window.installCRVerifyApp = function () {
+        if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(function () {});
+        }
+
         if (!deferredPrompt) {
             return;
         }

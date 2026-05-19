@@ -1,4 +1,5 @@
 from io import BytesIO
+import json
 
 import qrcode
 from django.conf import settings
@@ -17,7 +18,14 @@ from .models import Employee
 
 def pwa_manifest(request):
     manifest_path = settings.BASE_DIR / "static" / "manifest.json"
-    return FileResponse(open(manifest_path, "rb"), content_type="application/manifest+json")
+    with open(manifest_path, encoding="utf-8") as manifest_file:
+        manifest = json.load(manifest_file)
+
+    start_url = request.GET.get("start", "").strip()
+    if start_url.startswith("/") and not start_url.startswith("//"):
+        manifest["start_url"] = start_url
+
+    return JsonResponse(manifest, content_type="application/manifest+json")
 
 
 def service_worker(request):
