@@ -62,32 +62,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL:
     if dj_database_url is None:
         raise RuntimeError("dj-database-url is required when DATABASE_URL is set.")
-    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    DATABASES["default"]["OPTIONS"] = {"ssl": {"ssl": {}}}
-    
-
-# To switch to MySQL later, replace DATABASES with:
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "crccf_qr",
-#         "USER": "db_user",
-#         "PASSWORD": "db_password",
-#         "HOST": "localhost",
-#         "PORT": "3306",
-#     }
-# }
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+        )
+    }
+elif DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    raise RuntimeError("DATABASE_URL is required when DEBUG=False.")
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
