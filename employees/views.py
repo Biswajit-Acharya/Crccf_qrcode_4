@@ -1,17 +1,30 @@
 from io import BytesIO
 
 import qrcode
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from .forms import EmployeeForm
 from .models import Employee
+
+
+def pwa_manifest(request):
+    manifest_path = settings.BASE_DIR / "static" / "manifest.json"
+    return FileResponse(open(manifest_path, "rb"), content_type="application/manifest+json")
+
+
+def service_worker(request):
+    worker_path = settings.BASE_DIR / "static" / "employees" / "js" / "service-worker.js"
+    response = HttpResponse(open(worker_path, encoding="utf-8").read(), content_type="application/javascript")
+    response["Service-Worker-Allowed"] = "/"
+    return response
 
 
 def admin_required(view_func):

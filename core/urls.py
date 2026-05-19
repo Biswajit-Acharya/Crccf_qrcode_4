@@ -10,6 +10,8 @@ from employees import views
 
 
 urlpatterns = [
+    path("manifest.json", views.pwa_manifest, name="pwa_manifest"),
+    path("service-worker.js", views.service_worker, name="service_worker"),
     path("django-admin/", admin.site.urls),
     path(
         "login/",

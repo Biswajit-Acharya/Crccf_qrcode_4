@@ -4,7 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#061b34">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CR Verify">
     <title>{% block title %}CR Cyber Crime Foundation{% endblock %}</title>
+    <link rel="manifest" href="{% url 'pwa_manifest' %}">
+    <link rel="icon" href="{% static 'employees/icons/icon-192.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'employees/icons/icon-192.png' %}">
     <link rel="stylesheet" href="{% static 'employees/css/styles.css' %}">
 </head>
 <body>
@@ -34,5 +42,6 @@
         {% endif %}
         {% block content %}{% endblock %}
     </main>
+    <script src="{% static 'employees/js/pwa.js' %}" defer></script>
 </body>
 </html>
