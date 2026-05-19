@@ -1,14 +1,16 @@
 {
+  "id": "/scanner/",
   "name": "CR Cyber Crime Foundation Verification",
   "short_name": "CR Verify",
   "description": "Employee verification app for CR Cyber Crime Foundation.",
-  "start_url": "/",
+  "start_url": "/scanner/",
   "scope": "/",
-  "display": "standalone",
-  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
   "orientation": "portrait",
   "background_color": "#061b34",
   "theme_color": "#061b34",
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
       "src": "/static/employees/icons/icon-192.png",

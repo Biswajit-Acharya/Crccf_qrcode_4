@@ -489,10 +489,26 @@ label {
     justify-content: center;
 }
 
+.pwa-standalone .pwa-install-button,
+.pwa-installed .pwa-install-button {
+    display: none;
+}
+
 @media (display-mode: standalone) {
     .verify-text-page {
         padding-top: max(28px, env(safe-area-inset-top));
         padding-bottom: max(28px, env(safe-area-inset-bottom));
+    }
+
+    .pwa-install-button {
+        display: none;
+    }
+}
+
+@media (display-mode: fullscreen) {
+    .verify-text-page {
+        padding-top: max(14px, env(safe-area-inset-top));
+        padding-bottom: max(14px, env(safe-area-inset-bottom));
     }
 
     .pwa-install-button {

@@ -1,7 +1,9 @@
-const CACHE_NAME = "cr-verify-pwa-v1";
+const CACHE_NAME = "cr-verify-pwa-v2";
 const APP_SHELL = [
     "/manifest.json",
+    "/scanner/",
     "/static/employees/css/styles.css",
+    "/static/employees/js/pwa.js",
     "/static/employees/icons/icon-192.png",
     "/static/employees/icons/icon-512.png",
     "/static/employees/icons/maskable-192.png",
@@ -42,6 +44,10 @@ self.addEventListener("fetch", (event) => {
         event.respondWith(
             fetch(event.request)
                 .then((response) => {
+                    if (!response.ok) {
+                        return response;
+                    }
+
                     const copy = response.clone();
                     caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
                     return response;
@@ -52,6 +58,16 @@ self.addEventListener("fetch", (event) => {
     }
 
     event.respondWith(
-        caches.match(event.request).then((cached) => cached || fetch(event.request))
+        caches.match(event.request).then((cached) =>
+            cached || fetch(event.request).then((response) => {
+                if (!response.ok) {
+                    return response;
+                }
+
+                const copy = response.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+                return response;
+            })
+        )
     );
 });
