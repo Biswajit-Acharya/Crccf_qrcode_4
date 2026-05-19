@@ -61,40 +61,4 @@
         </table>
     </div>
 </section>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        alert("Dashboard script running");
-
-        const rows = document.querySelectorAll("tr");
-
-        rows.forEach(function(row) {
-
-            const cells = row.querySelectorAll("td");
-
-            if (cells.length >= 2) {
-
-                const empId = cells[0].innerText.trim();
-                const name = cells[1].innerText.trim();
-
-                if (empId && name && empId !== "EMPLOYEE ID") {
-
-                    localStorage.setItem(
-                        "employee_" + empId,
-                        JSON.stringify({
-                            employee_id: empId,
-                            full_name: name
-                        })
-                    );
-
-                }
-
-            }
-
-        });
-
-        alert("Employees saved to localStorage");
-
-    });
-</script>
 {% endblock %}

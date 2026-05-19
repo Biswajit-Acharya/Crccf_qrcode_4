@@ -298,15 +298,39 @@ label {
     font-weight: 700;
 }
 
+.field-has-error input,
+.field-has-error select,
+.field-has-error textarea {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 4px rgba(214, 61, 79, 0.12);
+}
+
 .span-2 {
     grid-column: 1 / -1;
 }
 
-.errorlist {
+.errorlist,
+.field-error,
+.form-errors {
     margin: 0;
-    padding-left: 18px;
     color: var(--danger);
     font-size: 0.9rem;
+}
+
+.errorlist {
+    padding-left: 18px;
+}
+
+.field-error {
+    font-weight: 700;
+}
+
+.form-errors {
+    border: 1px solid rgba(214, 61, 79, 0.28);
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: #fff1f3;
+    font-weight: 700;
 }
 
 .messages {
@@ -483,11 +507,18 @@ label {
     line-height: 1.35;
 }
 
+.pwa-install-panel {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+}
+
 .pwa-install-button {
-    display: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     min-height: 44px;
-    margin-top: 14px;
     border: 0;
     border-radius: 8px;
     color: var(--navy);
@@ -497,8 +528,8 @@ label {
 }
 
 .pwa-install-help {
-    display: none;
-    margin: 10px 0 0;
+    display: block;
+    margin: 0;
     color: var(--muted);
     font-size: 0.86rem;
     font-weight: 700;
@@ -506,20 +537,12 @@ label {
     text-align: center;
 }
 
-.pwa-install-ready .pwa-install-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.pwa-install-supported .pwa-install-help {
+    color: #066247;
 }
 
-.pwa-ios:not(.pwa-standalone) .pwa-install-help {
-    display: block;
-}
-
-.pwa-standalone .pwa-install-button,
-.pwa-installed .pwa-install-button,
-.pwa-standalone .pwa-install-help,
-.pwa-installed .pwa-install-help {
+.pwa-standalone .pwa-install-panel,
+.pwa-installed .pwa-install-panel {
     display: none;
 }
 
@@ -535,7 +558,7 @@ label {
         padding-bottom: max(28px, env(safe-area-inset-bottom));
     }
 
-    .pwa-install-button {
+    .pwa-install-panel {
         display: none;
     }
 }
@@ -552,7 +575,7 @@ label {
         padding-bottom: max(14px, env(safe-area-inset-bottom));
     }
 
-    .pwa-install-button {
+    .pwa-install-panel {
         display: none;
     }
 }

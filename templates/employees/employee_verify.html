@@ -79,10 +79,14 @@
             </dl>
 
             <p class="verified-note">This employee record is verified from the official database.</p>
-            <button class="pwa-install-button" type="button" onclick="window.installCRVerifyApp && window.installCRVerifyApp()">
-                Install app
-            </button>
-            <p class="pwa-install-help">Use Add to Home Screen to open this verification in fullscreen app mode.</p>
+            <div class="pwa-install-panel" aria-live="polite">
+                <button class="pwa-install-button" type="button" onclick="window.installCRVerifyApp && window.installCRVerifyApp()">
+                    Install app
+                </button>
+                <p class="pwa-install-help" id="pwaInstallHelp">
+                    Tap Install app. If your browser does not show a prompt, use the browser menu and choose Add to Home Screen.
+                </p>
+            </div>
         </section>
     </main>
 

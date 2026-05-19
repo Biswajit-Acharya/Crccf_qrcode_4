@@ -1,4 +1,4 @@
-const CACHE_NAME = "cr-verify-pwa-v2";
+const CACHE_NAME = "cr-verify-pwa-v3";
 const APP_SHELL = [
     "/manifest.json",
     "/scanner/",

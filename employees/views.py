@@ -68,10 +68,13 @@ def dashboard(request):
 @admin_required
 def employee_create(request):
     form = EmployeeForm(request.POST or None, request.FILES or None)
-    if request.method == "POST" and form.is_valid():
-        employee = form.save()
-        messages.success(request, f"Employee {employee.employee_id} added successfully.")
-        return redirect("dashboard")
+    if request.method == "POST":
+        if form.is_valid():
+            employee = form.save()
+            messages.success(request, f"Employee {employee.employee_id} added successfully.")
+            return redirect("dashboard")
+
+        messages.error(request, "Employee was not saved. Please fix the highlighted fields below.")
     return render(request, "employees/employee_form.html", {"form": form, "title": "Add Employee"})
 
 
@@ -79,10 +82,13 @@ def employee_create(request):
 def employee_update(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     form = EmployeeForm(request.POST or None, request.FILES or None, instance=employee)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, f"Employee {employee.employee_id} updated successfully.")
-        return redirect("dashboard")
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Employee {employee.employee_id} updated successfully.")
+            return redirect("dashboard")
+
+        messages.error(request, "Employee was not updated. Please fix the highlighted fields below.")
     return render(request, "employees/employee_form.html", {"form": form, "title": "Edit Employee"})
 
 
