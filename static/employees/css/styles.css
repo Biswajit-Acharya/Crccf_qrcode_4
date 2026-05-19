@@ -335,9 +335,11 @@ label {
 
 .verification-body {
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
     background:
-        linear-gradient(135deg, rgba(8, 40, 74, 0.95), rgba(9, 82, 110, 0.92)),
-        linear-gradient(180deg, #061b34, #0b315f);
+        radial-gradient(circle at top left, rgba(25, 211, 255, 0.24), transparent 34%),
+        linear-gradient(145deg, #061b34 0%, #092945 46%, #071426 100%);
 }
 
 .verification-page {
@@ -350,18 +352,21 @@ label {
     display: grid;
     place-items: center;
     min-height: 100vh;
-    width: min(760px, calc(100% - 28px));
+    min-height: 100dvh;
+    width: min(620px, calc(100% - 24px));
     margin: 0 auto;
-    padding: 28px 0;
+    padding: max(14px, env(safe-area-inset-top)) 0 max(14px, env(safe-area-inset-bottom));
 }
 
 .verify-text-card {
     width: 100%;
-    border: 1px solid var(--line);
+    max-height: calc(100dvh - 28px);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.72);
     border-radius: 8px;
-    padding: clamp(22px, 5vw, 36px);
-    background: var(--white);
-    box-shadow: var(--shadow);
+    padding: clamp(16px, 4vw, 26px);
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
 }
 
 .verify-text-header,
@@ -373,18 +378,18 @@ label {
 
 .verify-text-header {
     justify-content: space-between;
-    padding-bottom: 18px;
+    padding-bottom: 14px;
     border-bottom: 1px solid var(--line);
 }
 
 .verify-profile {
-    margin: 26px 0;
+    margin: clamp(16px, 4vw, 22px) 0;
 }
 
 .verify-photo {
-    width: 118px;
-    height: 118px;
-    flex: 0 0 118px;
+    width: clamp(86px, 22vw, 110px);
+    height: clamp(86px, 22vw, 110px);
+    flex: 0 0 clamp(86px, 22vw, 110px);
     border: 4px solid var(--cyan-soft);
     border-radius: 8px;
     object-fit: cover;
@@ -402,13 +407,14 @@ label {
 .verify-kicker {
     margin: 0 0 8px;
     color: var(--success);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 800;
     text-transform: uppercase;
 }
 
 .verify-profile h1 {
     margin: 0;
+    font-size: clamp(1.55rem, 7vw, 2.25rem);
 }
 
 .verify-role {
@@ -428,9 +434,9 @@ label {
 
 .verify-text-list div {
     display: grid;
-    grid-template-columns: minmax(130px, 0.42fr) 1fr;
-    gap: 16px;
-    padding: 14px 16px;
+    grid-template-columns: minmax(112px, 0.38fr) 1fr;
+    gap: 12px;
+    padding: 11px 13px;
     background: #fbfdff;
     border-bottom: 1px solid var(--line);
 }
@@ -444,22 +450,24 @@ label {
 }
 
 .verify-text-list dt {
-    font-size: 0.86rem;
+    font-size: 0.74rem;
 }
 
 .verify-text-list dd {
     margin: 0;
     color: var(--text);
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
 .verified-note {
-    margin: 18px 0 0;
+    margin: 14px 0 0;
     border-radius: 8px;
-    padding: 13px 14px;
+    padding: 11px 13px;
     color: #066247;
     background: #dcf8ee;
     font-weight: 800;
+    line-height: 1.35;
 }
 
 .pwa-install-button {
@@ -643,13 +651,22 @@ dd {
 
     .verify-text-header,
     .verify-profile {
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
+    }
+
+    .verify-text-header {
+        gap: 12px;
+    }
+
+    .verify-profile {
         flex-direction: column;
     }
 
     .verify-text-list div {
-        grid-template-columns: 1fr;
-        gap: 6px;
+        grid-template-columns: minmax(94px, 0.42fr) 1fr;
+        gap: 10px;
+        text-align: left;
     }
 
     .span-2,
@@ -660,5 +677,45 @@ dd {
     th,
     td {
         padding: 13px 12px;
+    }
+}
+
+@media (max-width: 430px) {
+    .verify-brand {
+        gap: 9px;
+    }
+
+    .verify-brand strong {
+        font-size: 0.9rem;
+    }
+
+    .verify-brand small {
+        font-size: 0.76rem;
+    }
+
+    .brand-mark {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+    }
+
+    .status-pill {
+        min-height: 26px;
+        padding: 4px 9px;
+        font-size: 0.76rem;
+    }
+}
+
+@media (max-height: 700px) {
+    .verification-body {
+        overflow: auto;
+    }
+
+    .verify-text-page {
+        min-height: 100dvh;
+    }
+
+    .verify-text-card {
+        max-height: none;
     }
 }
