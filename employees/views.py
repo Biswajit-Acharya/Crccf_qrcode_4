@@ -80,7 +80,8 @@ def employee_delete(request, pk):
 def employee_qr_download(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     qr = qrcode.QRCode(box_size=10, border=4)
-    qr.add_data(str(employee.qr_token))
+    verification_url = request.build_absolute_uri(f"/v/{employee.qr_token}/")
+    qr.add_data(verification_url)
 
     qr.make(fit=True)
     image = qr.make_image(fill_color="#08284a", back_color="white")
@@ -102,6 +103,11 @@ def employee_public(request, qr_token):
         "employees/public_employee.html",
         {"lookup_key": str(qr_token), "api_url": api_path},
     )
+
+
+def employee_verify(request, token):
+    employee = get_object_or_404(Employee, qr_token=token)
+    return render(request, "employees/employee_verify.html", {"employee": employee})
 
 
 def employee_public_by_employee_id(request, employee_id):

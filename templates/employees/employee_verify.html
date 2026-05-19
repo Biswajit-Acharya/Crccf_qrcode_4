@@ -1,0 +1,79 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verified Employee | {{ employee.company_name }}</title>
+    <link rel="stylesheet" href="{% static 'employees/css/styles.css' %}">
+</head>
+<body class="verification-body">
+    <main class="verify-text-page">
+        <section class="verify-text-card" aria-labelledby="verify-title">
+            <header class="verify-text-header">
+                <div class="verify-brand">
+                    <span class="brand-mark">CR</span>
+                    <div>
+                        <strong>{{ employee.company_name }}</strong>
+                        <small>Employee Verification</small>
+                    </div>
+                </div>
+                <span class="status-pill {% if employee.status == 'Active' %}active{% else %}inactive{% endif %}">
+                    {{ employee.status }}
+                </span>
+            </header>
+
+            <div class="verify-profile">
+                {% if employee.profile_photo %}
+                    <img class="verify-photo" src="{{ employee.profile_photo.url }}" alt="{{ employee.full_name }}">
+                {% else %}
+                    <div class="verify-photo placeholder" aria-hidden="true">{{ employee.full_name|slice:":2"|upper }}</div>
+                {% endif %}
+
+                <div>
+                    <p class="verify-kicker">Verified employee</p>
+                    <h1 id="verify-title">{{ employee.full_name }}</h1>
+                    <p class="verify-role">{{ employee.designation }} | {{ employee.department }}</p>
+                </div>
+            </div>
+
+            <dl class="verify-text-list">
+                <div>
+                    <dt>Employee ID</dt>
+                    <dd>{{ employee.employee_id }}</dd>
+                </div>
+                <div>
+                    <dt>Name</dt>
+                    <dd>{{ employee.full_name }}</dd>
+                </div>
+                <div>
+                    <dt>Department</dt>
+                    <dd>{{ employee.department }}</dd>
+                </div>
+                <div>
+                    <dt>Designation</dt>
+                    <dd>{{ employee.designation }}</dd>
+                </div>
+                <div>
+                    <dt>Phone</dt>
+                    <dd>{{ employee.phone }}</dd>
+                </div>
+                <div>
+                    <dt>Email</dt>
+                    <dd>{{ employee.email }}</dd>
+                </div>
+                <div>
+                    <dt>Status</dt>
+                    <dd>{{ employee.status }}</dd>
+                </div>
+            </dl>
+
+            <p class="verified-note">This employee record is verified from the official database.</p>
+        </section>
+    </main>
+
+    <script>
+        window.history.replaceState({}, "", "/verified");
+    </script>
+</body>
+</html>

@@ -9,6 +9,7 @@ urlpatterns = [
     path("employees/<int:pk>/delete/", views.employee_delete, name="employee_delete"),
     path("employees/<int:pk>/qr/", views.employee_qr_download, name="employee_qr_download"),
     path("scanner/", views.employee_scanner, name="employee_scanner"),
+    path("v/<uuid:token>/", views.employee_verify, name="employee_verify"),
     path("employee/<uuid:qr_token>/", views.employee_public, name="employee_public"),
     path("employee/id/<str:employee_id>/", views.employee_public_by_employee_id, name="employee_public_by_employee_id"),
     path("api/employee/<uuid:qr_token>/", views.employee_api, name="employee_api"),
